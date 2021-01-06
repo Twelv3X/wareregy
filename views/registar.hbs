@@ -1,1 +1,21 @@
 <h1>Registar Utilizador</h1>
+
+<form action="/registarUtilizador" method="POST">
+  <div class="form-group">
+    <label for="email">Email address</label>
+    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+  </div>
+    <div class="form-group">
+    <label for="user">Utilizador</label>
+    <input type="text" class="form-control" name="user" placeholder="Enter username" >
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="text" class="form-control" id="password" name="password" disabled>
+  </div>
+  <button type="input" onclick="generatePassword(event)" class="btn btn-primary">Generate random password</button>
+  <button type="submit" class="btn btn-primary">Submit</button>
+   
+</form>
+
+

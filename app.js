@@ -7,6 +7,7 @@ const exphbs = require('express-handlebars');
 const queries = require("./operators/queries")
 const utilizador = require("./models/utilizador")
 const app = new express();
+const mailer = require("./operators/mailerConfig")
 
 //Handlebars
 app.engine('hbs', exphbs({
@@ -29,6 +30,8 @@ app.get("/login",(req,res)=>
 {
     res.render('login', {layout: 'login.hbs'});
 });
+
+
 
 //Login Form POST
 app.post('/login', async function(request, response) {
@@ -75,6 +78,23 @@ app.get('/registar',(req,res)=>{
         res.redirect('/login');
     }
 });
+
+app.post('/registarUtilizador',(req,res)=>{
+    
+    let email = req.body.email;
+    let password = req.body.password;
+
+    console.log(email);
+    console.log(password);
+    
+    var mailOptions = {
+        from: 'wareregy@gmail.com',
+        to: email,
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+      };
+});
+
 
 app.get('/produtos',(req,res)=>{
     if (req.session.loggedin) {
