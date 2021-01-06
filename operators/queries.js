@@ -7,7 +7,7 @@ class queries
 
     }
 
-     verificarUtilizador(email, password){
+        verificarUtilizador(email, password){
         return new Promise ((resolve,reject)=>
         {
         connection.query('SELECT * FROM utilizadores WHERE user_email = ? AND user_password = ?', [email, password], function(error, results, fields) {
@@ -16,7 +16,7 @@ class queries
                 //console.log(results);
                 return resolve(results);
             }else{
-                return reject(false);
+                return reject(0);
             }
         })
     })

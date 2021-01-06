@@ -36,8 +36,12 @@ app.post('/login', async function(request, response) {
     var userpassword = request.body.userpassword;
     if (useremail && userpassword) {
         let query = new queries();
+        let results = 0;
+        try{
         results = await query.verificarUtilizador(useremail,userpassword);
-
+        }catch(err){
+            console.log(err);
+        }
         if (results.length > 0){
             let user = new utilizador(results[0].id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
             request.session.name = user.nome; 
