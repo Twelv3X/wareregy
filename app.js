@@ -46,10 +46,11 @@ app.post('/login', async function(request, response) {
             console.log(err);
         }
         if (results.length > 0){
-            let user = new utilizador(results[0].id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
+            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
             request.session.name = user.nome; 
             request.session.loggedin = true;
             request.session.useremail = useremail;
+            request.session.userid = user.id;
             response.redirect('/index');
         } else {
             response.render('login', {
@@ -73,7 +74,8 @@ app.get('/index',(req,res)=>{
 app.get('/registar',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("registar");
+        res.render("registar",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -96,19 +98,33 @@ app.post('/registarUtilizador',(req,res)=>{
 });
 
 
-app.get('/produtos',(req,res)=>{
+app.get('/produtos', (req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("produtos");
+        res.render("produtos",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
 });
 
+app.get("/carregarRegistos", async (req,res)=>
+{
+    let query = new queries();
+    let registos = 0;
+    try{
+        registos = await query.consultarRegistos(req.session.userid);
+        res.json(registos);
+    }catch(err){
+        console.log(err);
+    }
+})
+
 app.get('/incidencias',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("incidencias");
+        res.render("incidencias",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -117,7 +133,8 @@ app.get('/incidencias',(req,res)=>{
 app.get('/estatisticas',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("estatisticas");
+        res.render("estatisticas",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -126,7 +143,8 @@ app.get('/estatisticas',(req,res)=>{
 app.get('/eventos',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("eventos");
+        res.render("eventos",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
