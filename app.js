@@ -14,7 +14,9 @@ app.engine('hbs', exphbs({
 }));
 app.set('view engine', 'hbs');
 app.use("/static",express.static("public"));
-//
+
+//Api
+app.use("/", require("./api/api"))
 
 app.use(session({
     secret: 'secret',

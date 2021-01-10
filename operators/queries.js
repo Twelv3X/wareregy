@@ -21,5 +21,20 @@ class queries
         })
     })
 }
+
+    devolverRegistos(user_id, registo_data){
+        return new Promise ((resolve,reject)=>
+        {
+        connection.query("SELECT produto_id, produto_nome, produto_peso, LEFT(SEC_TO_TIME(registo_hora),5)as registo_hora FROM produtos_registados natural join produtos WHERE user_id= ? AND registo_data = ? ORDER BY registo_hora ASC", [user_id, registo_data], function(error, results, fields) {
+
+            if (results.length > 0) {
+                               
+                return resolve(results);
+            }else{
+                return reject(false);
+            }
+        })
+    })
+    }
 }
 module.exports = queries;
