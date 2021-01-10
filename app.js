@@ -7,6 +7,7 @@ const exphbs = require('express-handlebars');
 const queries = require("./operators/queries")
 const utilizador = require("./models/utilizador")
 const app = new express();
+const mailer = require("./operators/mailerConfig")
 
 //Handlebars
 app.engine('hbs', exphbs({
@@ -25,6 +26,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({extended : true}));
+
 app.use(bodyParser.json());
 
 app.get("/login",(req,res)=>
@@ -32,19 +34,26 @@ app.get("/login",(req,res)=>
     res.render('login', {layout: 'login.hbs'});
 });
 
+
+
 //Login Form POST
 app.post('/login', async function(request, response) {
     var useremail = request.body.useremail;
     var userpassword = request.body.userpassword;
     if (useremail && userpassword) {
         let query = new queries();
+        let results = 0;
+        try{
         results = await query.verificarUtilizador(useremail,userpassword);
-
+        }catch(err){
+            console.log(err);
+        }
         if (results.length > 0){
-            let user = new utilizador(results[0].id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
+            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
             request.session.name = user.nome; 
             request.session.loggedin = true;
             request.session.useremail = useremail;
+            request.session.userid = user.id;
             response.redirect('/index');
         } else {
             response.render('login', {
@@ -68,16 +77,35 @@ app.get('/index',(req,res)=>{
 app.get('/registar',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("registar");
+        res.render("registar",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
 });
 
-app.get('/produtos',(req,res)=>{
+app.post('/registarUtilizador',(req,res)=>{
+    
+    let email = req.body.email;
+    let password = req.body.password;
+
+    console.log(email);
+    console.log(password);
+    
+    var mailOptions = {
+        from: 'wareregy@gmail.com',
+        to: email,
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+      };
+});
+
+
+app.get('/produtos', (req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("produtos");
+        res.render("produtos",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -87,6 +115,25 @@ app.get('/incidencias',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
         res.render("incidencias");
+}});
+
+app.get("/carregarRegistos", async (req,res)=>
+{
+    let query = new queries();
+    let registos = 0;
+    try{
+        registos = await query.consultarRegistos(req.session.userid);
+        res.json(registos);
+    }catch(err){
+        console.log(err);
+    }
+})
+
+app.get('/incidencias',(req,res)=>{
+    if (req.session.loggedin) {
+        //res.sendFile(path.join(__dirname,"public","index.html"));
+        res.render("incidencias",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -95,7 +142,8 @@ app.get('/incidencias',(req,res)=>{
 app.get('/estatisticas',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("estatisticas");
+        res.render("estatisticas",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -104,7 +152,8 @@ app.get('/estatisticas',(req,res)=>{
 app.get('/eventos',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));
-        res.render("eventos");
+        res.render("eventos",{
+            name: req.session.name});
     } else {
         res.redirect('/login');
     }
@@ -118,4 +167,4 @@ app.get('/logout',(req,res)=>{
 app.listen(3000,(err)=>
 {
     console.log("Running...");
-});
+})
