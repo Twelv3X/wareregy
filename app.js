@@ -129,6 +129,20 @@ app.get("/carregarRegistos", async (req,res)=>
     }
 })
 
+app.get("/carregarAllRegistos", async (req,res)=>
+{
+    console.log(req);
+    let query = new queries();
+    let registos = 0;
+    try{
+        registos = await query.consultarAllRegistos();
+     
+        res.json(registos);
+    }catch(err){
+        console.log(err);
+    }
+})
+
 app.get('/incidencias',(req,res)=>{
     if (req.session.loggedin) {
         //res.sendFile(path.join(__dirname,"public","index.html"));

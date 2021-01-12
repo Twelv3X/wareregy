@@ -14,3 +14,27 @@ function generatePassword(e) {
 
     
 }
+
+function getAllRegistos(){
+
+    let hdr = new Headers();
+    let link = "http://localhost:3000/carregarAllRegistos";
+    let init = {
+        method: "GET",
+        headers:hdr
+      }
+
+      fetch(link,init).then(
+        function(response)
+        {
+            console.log(response);
+          return response.text();
+        }
+      ).then(
+        function(texto)
+        {
+
+        });
+    }
+
+    
