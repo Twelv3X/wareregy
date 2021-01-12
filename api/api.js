@@ -2,11 +2,14 @@ const express = require('express');
 const queries = require("../operators/queries");
 const utilizador = require("../models/utilizador")
 const api = express.Router();
+const bodyParser = require('body-parser');
+api.use(bodyParser.urlencoded({
+    extended: true
+  }));
 
 api.post('/registos', async function(request, response) {
-    console.log(request);
-    var user_id = request.query.user_id;
-    var registo_data = request.query.registo_data;
+    var user_id = request.body.user_id;
+    var registo_data = request.body.registo_data;
     console.log(user_id);
     console.log(registo_data);
     let query = new queries();
@@ -19,25 +22,26 @@ api.post('/registos', async function(request, response) {
 })
 
 api.post('/applogin', async function(request, response) {
-    console.log(request.query);
-    var useremail = request.query.user_email;
-    var userpassword = request.query.user_password;
+   
+    var useremail = request.body.user_email;
+    var userpassword = request.body.user_password;
     if (useremail && userpassword) {
         let query = new queries();
         let results = 0;
         try{
         results = await query.verificarUtilizador(useremail,userpassword);
         }catch(err){
-            console.log(err);
+            
         }
-        //console.log(results);
         if (results.length > 0){
-            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_privilegio);
+            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_privilegio,results[0].user_xp);
             response.json(user);
             response.end();
         } else {
-            response.message = 'Invalid username or password';
+            response.json({isAuth : false, message : 'Login Falhou'});
+            console.log(response);
             response.end();
+            
         }           
     };
 });
