@@ -18,7 +18,8 @@ function generatePassword(e) {
 function getAllRegistos(){
 
     let hdr = new Headers();
-    let link = "http://localhost:3000/carregarAllRegistos";
+    hdr.append("Content-type","application/json");
+    let link = "/carregarAllRegistos";
     let init = {
         method: "GET",
         headers:hdr
