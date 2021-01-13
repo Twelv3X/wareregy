@@ -8,6 +8,7 @@ api.use(bodyParser.urlencoded({
   }));
 
 api.post('/registos', async function(request, response) {
+    console.log(req);
     var user_id = request.body.user_id;
     var registo_data = request.body.registo_data;
     console.log(user_id);
@@ -22,7 +23,7 @@ api.post('/registos', async function(request, response) {
 })
 
 api.post('/applogin', async function(request, response) {
-   
+    console.log(request);
     var useremail = request.body.user_email;
     var userpassword = request.body.user_password;
     if (useremail && userpassword) {

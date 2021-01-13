@@ -131,7 +131,6 @@ app.get("/carregarRegistos", async (req,res)=>
 
 app.get("/carregarAllRegistos", async (req,res)=>
 {
-    console.log(req);
     let query = new queries();
     let registos = 0;
     try{

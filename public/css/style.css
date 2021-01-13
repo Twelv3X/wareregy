@@ -3,6 +3,55 @@ body{
   background: linear-gradient(to top, #614385, #516395);
 }
 
+.contentor {
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+}
+#rTable_length{
+  color:white !important;
+}
+
+#rTable_filter{
+  color:white !important;
+}
+.page-link{
+  color:white !important;
+  background-color: transparent;
+}
+
+.page-item.disabled .page-link {
+  background-color:white !important;
+  color: grey !important;
+}
+
+.page-item.active .page-link{
+  background-color: white !important;
+  color: #614385 !important;
+}
+
+.page-link:hover {
+  background-color:white !important;
+  color: black !important;
+}
+.paginate_button{
+  background-color: transparent;
+}
+#rTable_info{
+  color:white;
+}
+thead{
+  background: #614385 !important;
+}
+
+tr{
+  background-color: transparent !important;
+}
+
+tbody{
+  background: linear-gradient(to top, #516395, #4a5e95) !important;
+}
+
 #wrapper {
     overflow-x: hidden;
  }
