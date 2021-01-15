@@ -34,7 +34,7 @@ api.post('/applogin', async function(request, response) {
             
         }
         if (results.length > 0){
-            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_login, results[0].user_privilegio,results[0].user_xp);
+            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_login, results[0].user_privilegio,results[0].user_xp,results[0].nivel,results[0].min_xp,results[0].max_xp);
             response.json(user);
             console.log("Login efetuado: ", user);
             response.end();
@@ -48,22 +48,28 @@ api.post('/applogin', async function(request, response) {
 });
 
 api.post('/enviarregisto', async function(request, response) {
-    console.log("Request on /enviarregisto : ", request.body);
+    console.log("Request on /enviarregisto");
    
     let userId = request.body.user_id;
     let prodId = request.body.produto_id;
     let regData = request.body.registo_data;
     let regHora = request.body.registo_hora;
-
+    let exp = request.body.exp;
     let registo = new reg("",userId,prodId,regData,regHora);
 
     let query = new queries();
     try{
+    exp = await query.atualizarExp(exp, userId);
     registos = await query.enviarRegisto(registo);
-    if(registos){
-        response.set('Content-Type', 'text/html');
-        response.send(["Sucesso"]);
-        response.end();
+
+    if(registos && exp){
+        uExp = await query.getUserExp(userId);
+        if(uExp.length > 0){
+            response.set('Content-Type', 'text/html');
+            response.send(uExp);
+            response.end();
+        }
+       
     }else{
         response.set('Content-Type', 'text/html');
         response.send(["Erro"]);

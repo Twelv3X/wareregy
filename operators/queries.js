@@ -1,5 +1,4 @@
 const connection = require("./mySQL");
-const utilizador = require("../models/utilizador");
 
 class queries
 {
@@ -7,11 +6,10 @@ class queries
 
     }
 
-
      verificarUtilizador(email, password){
         return new Promise ((resolve,reject)=>
         {
-        connection.query('SELECT * FROM utilizadores WHERE user_email = ? AND user_password = ?', [email, password], function(error, results, fields) {
+        connection.query('SELECT * FROM utilizadores inner join niveis on user_xp BETWEEN min_xp and max_xp WHERE user_email = ? AND user_password = ?', [email, password], function(error, results, fields) {
             if (results.length > 0) {
 
                 return resolve(results);
@@ -84,5 +82,34 @@ class queries
             })
         })
     }
+
+    atualizarExp(exp,uId){
+        return new Promise ((resolve,reject)=>
+        {
+        connection.query("UPDATE utilizadores SET user_xp = user_xp + ? WHERE user_id = ?;", [exp, uId], function(error, results, fields) {
+            if (!error)
+            {
+                return resolve(true);
+            }else{
+                return reject(false);
+            }
+        })
+    })
+    }
+
+    getUserExp(uId){
+        return new Promise ((resolve,reject)=>
+        {
+        connection.query("SELECT user_xp, nivel, min_xp, max_xp FROM utilizadores inner join niveis on user_xp BETWEEN min_xp and max_xp WHERE user_id = ?", [uId], function(error, results, fields) {
+            if (results.length > 0)
+                {
+                    return resolve(results);
+                }else{
+                    return reject(false);
+                }
+        })
+    })
+    }
+
 }
 module.exports = queries;
