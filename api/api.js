@@ -34,7 +34,9 @@ api.post('/applogin', async function(request, response) {
             
         }
         if (results.length > 0){
-            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_login, results[0].user_privilegio,results[0].user_xp,results[0].nivel,results[0].min_xp,results[0].max_xp);
+            nRegistos = await query.getNrRegistos(results[0].user_id);
+            console.log();
+            let user = new utilizador(results[0].user_id, results[0].user_nome, results[0].user_email, results[0].user_login, results[0].user_privilegio,results[0].user_xp,results[0].nivel,results[0].min_xp,results[0].max_xp, nRegistos[0].nRegistos);
             response.json(user);
             console.log("Login efetuado: ", user);
             response.end();
@@ -67,6 +69,7 @@ api.post('/enviarregisto', async function(request, response) {
         if(uExp.length > 0){
             response.set('Content-Type', 'text/html');
             response.send(uExp);
+            
             response.end();
         }
        

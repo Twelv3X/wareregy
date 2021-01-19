@@ -1,6 +1,6 @@
 class utilizador
 {
-    constructor(id,nome,email,login,privilegio,exp,nivel,minxp,maxxp)
+    constructor(id,nome,email,login,privilegio,exp,nivel,minxp,maxxp, nRegistos)
     {
         this.id = id;
         this.nome = nome;
@@ -11,6 +11,7 @@ class utilizador
         this.nivel = nivel;
         this.minxp = minxp;
         this.maxxp = maxxp;
+        this.nRegistos = nRegistos;
     }
 
 }

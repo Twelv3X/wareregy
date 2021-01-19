@@ -100,9 +100,10 @@ class queries
     getUserExp(uId){
         return new Promise ((resolve,reject)=>
         {
-        connection.query("SELECT user_xp, nivel, min_xp, max_xp FROM utilizadores inner join niveis on user_xp BETWEEN min_xp and max_xp WHERE user_id = ?", [uId], function(error, results, fields) {
+        connection.query("SELECT user_xp, nivel, min_xp, max_xp, (SELECT count(*) from produtos_registados where registo_data = CURDATE() AND user_id = ?) as nRegistos FROM utilizadores inner join niveis on user_xp BETWEEN min_xp and max_xp WHERE user_id = ?", [uId, uId], function(error, results, fields) {
             if (results.length > 0)
                 {
+                    console.log(results);
                     return resolve(results);
                 }else{
                     return reject(false);
@@ -110,6 +111,19 @@ class queries
         })
     })
     }
-
+    
+ getNrRegistos(uId){
+    return new Promise ((resolve,reject)=>
+    {
+    connection.query("SELECT count(*) as nRegistos from produtos_registados where registo_data = CURDATE() AND user_id = ?", [uId], function(error, results, fields) {
+        if (results.length > 0)
+            {
+                return resolve(results);
+            }else{
+                return reject(false);
+            }
+    })
+})
+}
 }
 module.exports = queries;
