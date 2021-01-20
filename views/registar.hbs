@@ -3,17 +3,17 @@
 <form action="/registarUtilizador" method="POST">
   <div class="form-group">
     <label for="email">Email address</label>
-    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
   </div>
     <div class="form-group">
-    <label for="user">Utilizador</label>
-    <input type="text" class="form-control" name="user" placeholder="Enter username" >
+    <label for="nome">Utilizador</label>
+    <input type="text" class="form-control" name="nome" placeholder="Enter username" required>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="text" class="form-control" id="password" name="password" disabled>
+  {{#if msg}}
+  <div class="alert {{msgClass}}" role="alert">
+  {{msg}}
   </div>
-  <button type="input" onclick="generatePassword(event)" class="btn btn-primary">Generate random password</button>
+  {{/if}}
   <button type="submit" class="btn btn-primary">Submit</button>
    
 </form>

@@ -86,4 +86,73 @@ function getAllRegistos(){
        
     }
 
+    function getEstatisticas(){
+      let form = document.getElementById("semana").value;
+      let semanaAno = form.split("-"); 
+      
+      let  semana = semanaAno[1].replace("W","");
+      let ano = semanaAno[0];
+
+    let hdr = new Headers();
+    hdr.append("Content-type","application/Json");
+
+    let body = {
+      semana:semana,ano:ano
+    }
+
+    let link = "/getregistos";
+    let init = {
+        method: "POST",
+        headers: hdr,
+        body: JSON.stringify(body)
+      }
+
+      fetch(link,init).then(
+        function(response)
+        {
+           
+          return response.json();
+        }
+      ).then(
+        function(json)
+        {
+          google.charts.load('current', {'packages':['bar']});
+          google.charts.setOnLoadCallback(drawStuff);
+          var dados = [];
+          json.forEach((json)=>
+              {
+                dados.push([String(json.registo_data), json.total])
+              })
+          console.log(dados);
+          function drawStuff() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Dia');
+            data.addColumn('number', 'Número de Registos');
+
+            data.addRows(dados);
+            var options = {
+              width: 800,
+              legend: { position: 'none' },
+              chart: {
+                title: '',
+                subtitle: '' },
+              axes: {
+                x: {
+                  0: { side: 'top', label: ''} // Top x-axis.
+                }
+              },
+              bar: { groupWidth: "90%" }
+            };
+    
+            var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+            // Convert the Classic options to Material options.
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+          };
+         
+      });
+  }
+
+
+    
+
     

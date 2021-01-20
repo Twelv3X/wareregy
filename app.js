@@ -7,7 +7,7 @@ const exphbs = require('express-handlebars');
 const queries = require("./operators/queries")
 const utilizador = require("./models/utilizador")
 const app = new express();
-const mailer = require("./operators/mailerConfig")
+const nodemailer = require("nodemailer")
 
 //Handlebars
 app.engine('hbs', exphbs({
@@ -84,20 +84,54 @@ app.get('/registar',(req,res)=>{
     }
 });
 
-app.post('/registarUtilizador',(req,res)=>{
-    
-    let email = req.body.email;
-    let password = req.body.password;
+app.post('/registarUtilizador',async (req,res)=>{
 
-    console.log(email);
-    console.log(password);
-    
+    var length = 8,
+    charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    password = "";
+    for (var i = 0, n = charset.length; i < length; ++i) {
+         password += charset.charAt(Math.floor(Math.random() * n));
+    }
+
+    let email = req.body.email;
+    let nome = req.body.nome
+
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: 'wareregy@gmail.com', 
+          pass: 'integracaosistemas', 
+        }
+      });
+
     var mailOptions = {
         from: 'wareregy@gmail.com',
         to: email,
         subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        text: password
       };
+    let query = new queries();
+    
+    try{
+        novoUtilizador = await query.novoUtilizador(nome,email,password);
+        
+        if(novoUtilizador){
+            transporter.sendMail(mailOptions, function(error, info){
+                if(error){
+                  return console.log(error);
+                }});
+
+            res.render("registar",{
+                name: req.session.name,
+                msg: "Utilizador registado com sucesso",
+                msgClass: 'alert-success'});     
+        }
+        }catch(err){
+            res.render("registar",{
+                name: req.session.name,
+                msg: "Erro ao registar utilizador",
+                msgClass: 'alert-danger'});
+        }
 });
 
 
@@ -141,6 +175,20 @@ app.get("/carregarAllRegistos", async (req,res)=>
         console.log(err);
     }
 })
+
+app.post('/getregistos', async(req,res)=>{
+    let query = new queries();
+    let registos = 0;
+     let semana = req.body.semana;
+     let ano = req.body.ano;
+    try{
+        registos = await query.getRegistos(semana,ano);
+        console.log(registos)
+        res.json(registos);
+    }catch(err){
+        console.log(err);
+    }
+});
 
 app.get('/incidencias',(req,res)=>{
     if (req.session.loggedin) {

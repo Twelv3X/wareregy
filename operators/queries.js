@@ -125,5 +125,35 @@ class queries
     })
 })
 }
+
+    novoUtilizador(nome,email,password){
+        return new Promise ((resolve,reject)=>
+        {
+        connection.query("INSERT INTO utilizadores VALUES('',?,?,?,0,0,0)", [nome,email,password], function(error, results, fields) {
+            if (!error)
+            {
+                return resolve(true);
+            }else{
+                console.log(error);
+                return reject(false);
+            }
+            })
+        })
+    }
+
+
+    getRegistos(semana, ano){
+    return new Promise ((resolve,reject)=>
+    {
+    connection.query("SELECT CONCAT(DAY(registo_data),'/',MONTH(registo_data)) as registo_data, count(*) as total from produtos_registados where  week(registo_data) = ? and year(registo_data) = ? group by day(registo_data) ; ", [semana,ano], function(error, results, fields) {
+        if (results.length > 0)
+            {
+                return resolve(results);
+            }else{
+                return reject(false);
+            }
+        })
+        })
+    }
 }
 module.exports = queries;
