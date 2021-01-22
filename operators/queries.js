@@ -155,5 +155,20 @@ class queries
         })
         })
     }
+
+    mudarPassword(id,password){
+        return new Promise ((resolve,reject)=>
+        {
+        connection.query("UPDATE utilizadores SET user_login = 1, user_password=? WHERE user_id=?", [password,id], function(error, results, fields) {
+            if (!error)
+            {
+                return resolve(results);
+            }else{
+                console.log(error);
+                return reject(false);
+            }
+            })
+        })
+    }
 }
 module.exports = queries;

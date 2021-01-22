@@ -83,4 +83,27 @@ api.post('/enviarregisto', async function(request, response) {
     }
 })
 
+api.post('/mudarpassword', async function(request, response) {
+    console.log("Request on /mudarpassword");
+   
+    let user_id = request.body.user_id;
+    let user_password = request.body.user_password;
+    let query = new queries();
+    try{
+    mudarPassword = await query.mudarPassword(user_id, user_password);
+    
+    if(mudarPassword.affectedRows > 0){
+            response.set('Content-Type', 'text/html');
+            response.send(["Sucesso"]);
+            response.end();     
+    }else{
+        response.set('Content-Type', 'text/html');
+        response.send(["Erro"]);
+        response.end();
+    }
+    }catch(err){
+        
+    }
+})
+
 module.exports = api;
