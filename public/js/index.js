@@ -131,7 +131,7 @@ function getAllRegistos(){
 
             data.addRows(dados);
             var options = {
-              width: 800,
+      
               legend: { position: 'none' },
               chart: {
                 title: '',
