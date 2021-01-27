@@ -24,7 +24,8 @@ class queries
         return new Promise ((resolve,reject)=>
         {
         connection.query("SELECT user_id, produto_id, produto_nome, produto_peso, registo_data, registo_hora FROM produtos_registados natural join produtos WHERE user_id= ? AND registo_data = ? ORDER BY registo_hora ASC", [user_id, registo_data], function(error, results, fields) {
-
+            console.log(error);
+            console.log(results);
             if (results.length > 0) {
                                
                 return resolve(results);
@@ -170,5 +171,23 @@ class queries
             })
         })
     }
+
+    enviarIncidencia(inci)
+    {
+        return new Promise ((resolve,reject)=>
+        {
+            connection.query('INSERT INTO produtos_incidencias (user_id, produto_id, caminhoFoto, incid_data, incid_hora, incid_comentario) VALUES (?,?,?,?,?,?)',[inci.user_id, inci.produto_id, inci.caminhoFoto, inci.incid_data, inci.incid_hora, inci.incid_comentario], function(error, results, fields)
+            {
+                console.log(error);
+                if (!error)
+                {
+                    return resolve(true);
+                }else{
+                    return reject(false);
+                }
+            })
+        })
+    }
+
 }
 module.exports = queries;

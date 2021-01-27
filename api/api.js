@@ -2,8 +2,21 @@ const express = require('express');
 const queries = require("../operators/queries");
 const utilizador = require("../models/utilizador")
 const reg = require("../models/registo")
+const incid = require("../models/incidencia")
 const api = express.Router();
 const bodyParser = require('body-parser');
+
+var multer, storage, path, crypto;
+multer = require('multer')
+path = require('path');
+crypto = require('crypto');
+var form = "<!DOCTYPE HTML><html><body>" +
+"<form method='post' action='/upload' enctype='multipart/form-data'>" +
+"<input type='file' name='upload'/>" +
+"<input type='submit' /></form>" +
+"</body></html>";
+
+
 api.use(bodyParser.urlencoded({
     extended: true
   }));
@@ -13,12 +26,17 @@ api.post('/registos', async function(request, response) {
     var user_id = request.body.user_id;
     var registo_data = request.body.registo_data;
     let query = new queries();
+    try{
     registos = await query.devolverRegistos(user_id,registo_data);
     if (registos.length > 0){
         
-        response.json(registos);
-        response.end();
+      response.json(registos);
+      response.end();
+  }
+    }catch{
+
     }
+    
 })
 
 api.post('/applogin', async function(request, response) {
@@ -105,5 +123,61 @@ api.post('/mudarpassword', async function(request, response) {
         
     }
 })
+
+
+
+// --- //
+api.get('/enviarincidencia', function (req, res){
+    res.writeHead(200, {'Content-Type': 'text/html' });
+    res.end(form);
+  
+  });
+  
+  // Include the node file module
+  var fs = require('fs');
+  
+  storage = multer.diskStorage({
+      destination: './incidencias/',
+      filename: function(req, file, cb) {
+        return crypto.pseudoRandomBytes(16, function(err, raw) {
+          if (err) {
+            return cb(err);
+          }
+          return cb(null, "" + (raw.toString('hex')) + (path.extname(file.originalname)));
+        });
+      }
+    });
+  
+  
+  // Post files
+  api.post(
+    "/upload",
+    multer({
+      storage: storage
+    }).single('upload'), function(req, res) {
+
+      res.redirect("./incidencias/" + req.file.filename);
+      let registo = JSON.parse(req.body.upload[1]);
+      let incidencia = new incid();
+      incidencia.user_id = registo.user_id;
+      incidencia.produto_id = registo.produto_id;
+      incidencia.incid_data = registo.registo_data;
+      incidencia.incid_hora = registo.registo_hora;
+      incidencia.caminhoFoto = "/incidencias/" + req.file.filename;
+      incidencia.incid_comentario = req.body.upload[2];
+      let query = new queries;
+      query.enviarIncidencia(incidencia);
+      console.log(incidencia);
+      return res.status(200).end();
+    });
+  
+  api.get('/incidencias/:upload', function (req, res){
+    file = req.params.upload;
+    var img = fs.readFileSync("./incidencias/" + file);
+    res.writeHead(200, {'Content-Type': 'image/png' });
+    res.end(img, 'binary');
+  
+  });
+  
 
 module.exports = api;
