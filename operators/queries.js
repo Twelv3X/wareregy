@@ -189,5 +189,23 @@ class queries
         })
     }
 
+    getEstatisticas(user_id, data){
+
+        return new Promise ((resolve,reject)=>
+        {
+            connection.query('SELECT HOUR(SEC_TO_TIME(registo_hora)) as hora, count(*) as total FROM produtos_registados where user_id = ? and registo_data = ? group by HOUR(SEC_TO_TIME(registo_hora))',[user_id, data], function(error, results, fields)
+            {
+                if (results.length > 0)
+                {
+                    return resolve(results);
+                }else{
+                    return reject(false);
+                }
+            })
+        })
+
+        
+    }
+
 }
 module.exports = queries;

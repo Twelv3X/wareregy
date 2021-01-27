@@ -124,7 +124,23 @@ api.post('/mudarpassword', async function(request, response) {
     }
 })
 
+api.post('/getestatisticas', async function(request, response) {
+  console.log("Request on /getestatisticas : ", request.body);
+  var user_id = request.body.user_id;
+  var registo_data = request.body.registo_data;
+  let query = new queries();
+  try{
+  registos = await query.getEstatisticas(user_id,registo_data);
+  if (registos.length > 0){
+      
+    response.json(registos);
+    response.end();
+}
+  }catch{
 
+  }
+  
+})
 
 // --- //
 api.get('/enviarincidencia', function (req, res){
