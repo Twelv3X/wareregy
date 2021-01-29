@@ -1,0 +1,102 @@
+/* CSS */
+body{
+  background: linear-gradient(to top, #614385, #516395);
+}
+
+.contentor {
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+}
+#rTable_length{
+  color:white !important;
+}
+
+#rTable_filter{
+  color:white !important;
+}
+.page-link{
+  color:white !important;
+  background-color: transparent;
+}
+
+.page-item.disabled .page-link {
+  background-color:white !important;
+  color: grey !important;
+}
+
+.page-item.active .page-link{
+  background-color: white !important;
+  color: #614385 !important;
+}
+
+.page-link:hover {
+  background-color:white !important;
+  color: black !important;
+}
+.paginate_button{
+  background-color: transparent;
+}
+#rTable_info{
+  color:white;
+}
+thead{
+  background: #614385 !important;
+}
+
+tr{
+  background-color: transparent !important;
+}
+
+tbody{
+  background: linear-gradient(to top, #516395, #4a5e95) !important;
+}
+
+#wrapper {
+    overflow-x: hidden;
+ }
+
+#sidebar-wrapper {
+  background: linear-gradient(to right, #614385, #516395);
+  min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin .25s ease-out;
+  -moz-transition: margin .25s ease-out;
+  -o-transition: margin .25s ease-out;
+  transition: margin .25s ease-out;
+}
+.navbar{
+  background: linear-gradient(to left, #614385, #516395);
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
